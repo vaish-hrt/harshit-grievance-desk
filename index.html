@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>🧸 Harshit’s Grievance Desk 🧸</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+body {
+margin: 0;
+font-family: 'Quicksand', cursive;
+background: #ffe5ec;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+}
+
+.container {
+background: white;
+border-radius: 20px;
+padding: 30px;
+width: 90%;
+max-width: 480px;
+box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+text-align: center;
+}
+
+h1 {
+font-size: 24px;
+color: maroon;
+margin-bottom: 10px;
+}
+
+label {
+display: block;
+margin-top: 20px;
+text-align: left;
+font-weight: 600;
+color: #333;
+}
+
+input, textarea, select {
+width: 100%;
+padding: 10px;
+margin-top: 5px;
+border: 1px solid #ccc;
+border-radius: 8px;
+font-family: 'Quicksand', sans-serif;
+font-size: 14px;
+}
+
+input[type="range"] {
+margin-top: 10px;
+}
+
+button {
+margin-top: 25px;
+background: maroon;
+color: white;
+border: none;
+padding: 10px 20px;
+border-radius: 8px;
+cursor: pointer;
+font-size: 16px;
+transition: transform 0.2s ease;
+}
+
+button:hover {
+transform: scale(1.05);
+}
+
+#form-container, #confirmation {
+display: none;
+}
+
+#confirmation p {
+text-align: left;
+font-size: 16px;
+color: #444;
+}
+
+audio {
+display: none;
+}
+
+hr {
+border: none;
+border-top: 1px dashed #ccc;
+margin: 20px 0;
+}
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" autoplay loop>
+<source src="Glue Song - beabadoobee.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- LOGIN -->
+<div class="container" id="login-screen">
+<h1>🧸 Welcome To Harshit’s Grievance Desk 🧸</h1>
+<p>Waking up the complaint desk… preparing tissues and eye-rolls 💅🧸💭</p>
+<label for="password">Enter your secret whine access password 😤💕</label>
+<input type="password" id="password" placeholder="••••••••" />
+<button onclick="checkPassword()">Enter</button>
+</div>
+
+<!-- FORM -->
+<div class="container" id="form-container">
+<h1>🧸 Harshit’s Grievance Desk 🧸</h1>
+
+<label>Title:</label>
+<input type="text" id="title" placeholder="e.g. She stole my fries again 😭" />
+
+<label>What’s bothering you?</label>
+<textarea id="issue" rows="4" placeholder="Describe your emotional damage 😔"></textarea>
+
+<label>Mood:</label>
+<select id="mood">
+<option>😤 Slightly Annoyed</option>
+<option>😩 Tired</option>
+<option>🫂 Soft and Sad/Happy</option>
+<option>😘 Just Wanted Attention</option>
+</select>
+
+<label>Severity: <span id="severityValue">5</span></label>
+<input type="range" id="severity" min="1" max="10" value="5" oninput="updateSeverity()" />
+
+<button id="submit-btn" onclick="submitForm()">Submit this tragedy to Vaish 😋</button>
+</div>
+
+<!-- CONFIRMATION -->
+<div class="container" id="confirmation">
+<h1>Complaint Received 🫂</h1>
+<p>Thank you, Harshit 🫶🏻<br>
+Vaish has received your complaint.<br>
+She is rolling her eyes but also smiling and will respond shortly 🤭💕</p>
+
+<hr>
+
+<p id="summary-text"></p>
+<button onclick="resetForm()">File Another Whine</button>
+</div>
+
+<script>
+emailjs.init("w6oSCiyck3R9CZxR1");
+
+const audio = document.getElementById("bgMusic");
+window.addEventListener("click", () => {
+if (audio.paused) {
+audio.play().catch(() => {});
+}
+});
+
+function checkPassword() {
+const pw = document.getElementById("password").value.trim();
+if (pw === "vaishluv") {
+document.getElementById("login-screen").style.display = "none";
+document.getElementById("form-container").style.display = "block";
+} else {
+alert("Oops! That’s not the right one you silly Harshit 🙄💕");
+}
+}
+
+function updateSeverity() {
+document.getElementById("severityValue").textContent = document.getElementById("severity").value;
+}
+
+function getSeverityLabel(val) {
+val = parseInt(val);
+if (val <= 2) return "Barely a Boo-boo 🩹";
+if (val <= 4) return "Needs Soft Reassurance 🫂";
+if (val <= 6) return "Hug Required 🤗";
+if (val <= 8) return "Serious but not terminal. Chocolate may help 🍫";
+return "EMOTIONAL EMERGENCY 🚨😭";
+}
+
+function submitForm() {
+const title = document.getElementById("title").value;
+const issue = document.getElementById("issue").value;
+const mood = document.getElementById("mood").value;
+const severity = document.getElementById("severity").value;
+const severityLabel = getSeverityLabel(severity);
+
+// Animate button
+const btn = document.getElementById("submit-btn");
+btn.style.transform = "scale(0.95)";
+setTimeout(() => { btn.style.transform = "scale(1)"; }, 150);
+
+// ✅ SEND BOTH NUMBER + LABEL TO INBOX
+emailjs.send("service_harshitlove", "template_pum30bb", {
+title: title,
+issue: issue,
+mood: mood,
+severity: `${severity} — ${severityLabel}` // ✅ HERE'S THE FIX!
+}).then(() => {
+document.getElementById("form-container").style.display = "none";
+document.getElementById("confirmation").style.display = "block";
+
+document.getElementById("summary-text").innerHTML = `
+<strong>Title:</strong> ${title}<br><br>
+<strong>What’s bothering you:</strong><br>${issue}<br><br>
+<strong>Mood:</strong> ${mood}<br><br>
+<strong>Severity:</strong> ${severity} — ${severityLabel}
+`;
+}, (error) => {
+alert("Oops! Something went wrong 😢\n" + JSON.stringify(error));
+});
+}
+
+function resetForm() {
+document.getElementById("confirmation").style.display = "none";
+document.getElementById("form-container").style.display = "block";
+document.getElementById("title").value = "";
+document.getElementById("issue").value = "";
+document.getElementById("mood").selectedIndex = 0;
+document.getElementById("severity").value = 5;
+updateSeverity();
+}
+</script>
+
+</body>
+</html>
